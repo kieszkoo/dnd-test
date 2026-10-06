@@ -18,7 +18,7 @@ data_store ={}
 async def upload_csv(file: UploadFile = File(...)):
     contents = await file.read()
 
-    df = pd.read.csv(io.BytesIO(contents))
+    df = pd.read_csv(io.BytesIO(contents))
 
     file_id = file.filename
     data_store[file_id] = df

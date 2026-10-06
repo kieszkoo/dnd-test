@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import BarChartSettings from "./components/BarChartSetings";
-import CsvUploadSettings from "./components/CsvUploadSettings";
+import { BarChartSettings } from "./components/BarChartSetings";
+import { CsvUploadSettings } from "./components/CsvUploadSettings";
 
 const Icons = {
   Database: () => (
@@ -291,6 +291,15 @@ export default function App() {
     setActiveModalNode(null);
   };
 
+  const updateNodeData = (nodeId, newData) => {
+    // Używamy prevNodes, aby zawsze nadpisywać najnowszą możliwą wersję planszy
+    setNodes((prevNodes) =>
+      prevNodes.map((n) =>
+        n.id === nodeId ? { ...n, data: { ...n.data, ...newData } } : n,
+      ),
+    );
+  };
+
   const startConnection = (e, nodeId, isInput, portIndex) => {
     e.stopPropagation();
     const rect = canvasRef.current.getBoundingClientRect();
@@ -561,16 +570,11 @@ export default function App() {
 
               {/* Dynamiczne pola w zależności od typu (Atrapa logiki) */}
               {activeModalNode.type === "csv" && (
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">
-                    Ścieżka pliku URL
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                  />
-                </div>
+                <CsvUploadSettings
+                  node={activeModalNode}
+                  updateNodeData={updateNodeData}
+                  onClose={() => setActiveModalNode(null)}
+                />
               )}
 
               {activeModalNode.type === "filter" && (
@@ -584,6 +588,15 @@ export default function App() {
                     <option>Usuń puste (Null)</option>
                   </select>
                 </div>
+              )}
+
+              {activeModalNode.type === "bar_chart" && (
+                <BarChartSettings
+                  node={activeModalNode}
+                  connections={edges}
+                  nodes={nodes}
+                  onClose={() => setActiveModalNode(null)}
+                />
               )}
 
               <div className="flex items-center gap-2 mt-6">
