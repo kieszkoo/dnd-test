@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { BarChartSettings } from "./components/BarChartSetings";
 import { CsvUploadSettings } from "./components/CsvUploadSettings";
+import { DataViewSettings } from "./components/DataViewSettings";
 
 const Icons = {
   Database: () => (
@@ -165,6 +166,13 @@ const TOOLBOX = [
         type: "bar_chart",
         label: "Wykres słupkowy",
         icon: "BarChart",
+        inputs: 1,
+        outputs: 0,
+      },
+      {
+        type: "table_view",
+        label: "Podgląd danych",
+        icon: "FileText",
         inputs: 1,
         outputs: 0,
       },
@@ -568,7 +576,6 @@ export default function App() {
                 />
               </div>
 
-              {/* Dynamiczne pola w zależności od typu (Atrapa logiki) */}
               {activeModalNode.type === "csv" && (
                 <CsvUploadSettings
                   node={activeModalNode}
@@ -592,6 +599,15 @@ export default function App() {
 
               {activeModalNode.type === "bar_chart" && (
                 <BarChartSettings
+                  node={activeModalNode}
+                  connections={edges}
+                  nodes={nodes}
+                  onClose={() => setActiveModalNode(null)}
+                />
+              )}
+
+              {activeModalNode.type === "table_view" && (
+                <DataViewSettings
                   node={activeModalNode}
                   connections={edges}
                   nodes={nodes}

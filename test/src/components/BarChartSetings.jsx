@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
-export function BarChartSettings({ node, connections, nodes, onClose }) {
+export function BarChartSettings({ node, connections, nodes }) {
   // Szukamy kabla, który WCHODZI (target) do naszego wykresu
   const inputConnection = connections.find((c) => c.target === node.id);
   // Szukamy węzła z którego ten kabel WYCHODZI (source)

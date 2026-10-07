@@ -45,3 +45,16 @@ def get_plot_bar(file_id: str, x_col: str, y_col: str):
     chart_data = aggregated.to_dict(orient="records")
 
     return {"data": chart_data}
+
+@app.get("/data/view")
+def view_data(file_id: str, limit: int = 50):
+    if file_id not in data_store:
+        return {"error": "File not found"}
+
+    df = data_store[file_id]
+    data_subset = df.head(limit)
+    data_subset = data_subset.where(pd.notnull(data_subset), None)
+    return {
+        "columns": df.columns.to_list(),
+        "data": data_subset.to_dict(orient="records")
+    }
