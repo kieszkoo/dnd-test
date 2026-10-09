@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { BarChartSettings } from "./components/BarChartSetings";
+import { LineChartSettings } from "./components/LineChartSettings";
 import { CsvUploadSettings } from "./components/CsvUploadSettings";
 import { DataViewSettings } from "./components/DataViewSettings";
 
@@ -340,7 +341,7 @@ export default function App() {
       return;
     }
 
-    setEdges([...edges, { id: `edge_${Date.now()}`, source, target }]);
+    setEdges([...edges, { id: `edge_${source}_${target}`, source, target }]);
     setConnecting(null);
   };
 
@@ -349,7 +350,7 @@ export default function App() {
     if (!node) return { x: 0, y: 0 };
 
     const portOffset = isInput
-      ? node.Inputs === 1
+      ? (node.inputs ?? node.Inputs) === 1
         ? 40
         : 25 + portIndex * 30
       : 40;
@@ -602,6 +603,16 @@ export default function App() {
                   node={activeModalNode}
                   connections={edges}
                   nodes={nodes}
+                  onClose={() => setActiveModalNode(null)}
+                />
+              )}
+
+              {activeModalNode.type === "line_chart" && (
+                <LineChartSettings
+                  node={activeModalNode}
+                  connections={edges}
+                  nodes={nodes}
+                  updateNodeData={updateNodeData}
                   onClose={() => setActiveModalNode(null)}
                 />
               )}
